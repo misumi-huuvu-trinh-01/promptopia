@@ -18,25 +18,30 @@ const CreatePropmt = () => {
 
   const createPrompt = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    if (!session) {
+      alert("You are currently not logged in.");
+      router.push("/");
+    } else {
+      setSubmitting(true);
 
-    try {
-      const response = await fetch("/api/prompt/new", {
-        method: "POST",
-        body: JSON.stringify({
-          prompt: post.prompt,
-          userId: session?.user.id,
-          tag: post.tag,
-        }),
-      });
+      try {
+        const response = await fetch("/api/prompt/new", {
+          method: "POST",
+          body: JSON.stringify({
+            prompt: post.prompt,
+            userId: session?.user.id,
+            tag: post.tag,
+          }),
+        });
 
-      if (response.ok) {
-        router.push("/");
+        if (response.ok) {
+          router.push("/");
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setSubmitting(false);
       }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setSubmitting(false);
     }
   };
 
